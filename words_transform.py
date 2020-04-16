@@ -42,7 +42,7 @@ def save_words_with_keys(words):
             char = " "
 
         if words[index] == "\r":
-            file.write("': '%d',\n" % count)
+            file.write("': %d,\n" % count)
             count = 0
             first = 0
 
@@ -53,10 +53,7 @@ def save_words_with_keys(words):
         if (words[index] != "\n") and (words[index] != "\r"):
             file.write(str(char))
             count += 1
-
-        if words[index] == len(words):
-            file.write("}")
-
+    file.write("': %d}" % count)
     file.close()
 
     return
