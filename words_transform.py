@@ -33,27 +33,32 @@ def save_words_with_keys(words):
     """Saves variable 'words' into the new file dictionary_with_keys.txt"""
     file = open("dictionary_with_keys.txt", "w+")
 
-    count = 0
-    first = 0
+    order = "0123456789abcdefghijklmnopqrstuvwxyz"
+    order_index = 0
+    string = ""
+    break_word = False
 
-    file.write("{")
-    for index, char in enumerate(words):
-        if words[index] == "_":
-            char = " "
+    file.write("{'%s':(" % order[order_index])
+    for char in words:
+        if (string == "") or (string[0] == order[order_index]):
+            if char == "_":
+                string = string + " "
 
-        if words[index] == "\r":
-            file.write("': %d,\n" % count)
-            count = 0
-            first = 0
+            elif (char == "\r") or (break_word == True):
+                file.write("'%s'," % string)
+                string = ""
+                break_word = False
 
-        if first == 0:
-            file.write("'")
-            first += 1
+            elif (char != "\n") and (char != "\r"):
+                string = string + char
+                string = string.lower()
 
-        if (words[index] != "\n") and (words[index] != "\r"):
-            file.write(str(char))
-            count += 1
-    file.write("': %d}" % count)
+        elif string[0] != order[order_index] and (order_index + 1 < len(order)):
+            order_index += 1
+            file.write("),\n'%s':(" % order[order_index])
+            break_word = True
+
+    file.write(")}")
     file.close()
 
     return
