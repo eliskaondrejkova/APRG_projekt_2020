@@ -30,37 +30,50 @@ def save_words(words):
 
 
 def save_words_with_keys(words):
-    """Saves variable 'words' into the new file dictionary_with_keys.txt"""
-    file = open("dictionary_with_keys.txt", "w+")
+    """Saves variable 'words' into the new file dictionary_with_keys.json"""
+    file = open("dictionary_with_keys.json", "w+")
 
     order = "0123456789abcdefghijklmnopqrstuvwxyz"
     order_index = 0
     string = ""
-    break_word = False
+    get_smaller_index = False
+    first_time = True
+    length = 0
 
-    file.write("{'%s':(" % order[order_index])
-    for char in words:
+    file.write('{"%s":{' % order[order_index])
+    for index, char in enumerate(words):
+        if get_smaller_index:
+            index -= 1
+            char = words[index]
+            get_smaller_index = False
+
         if (string == "") or (string[0] == order[order_index]):
             if char == "_":
                 string = string + " "
 
-            elif (char == "\r") or (break_word == True):
+            elif char == "\r":
                 if " " not in string:
-                    file.write("'%s'," % string)
+                    if first_time:
+                        file.write('"%s": %d' % (string, length))
+                        first_time = False
+                    else:
+                        file.write(', "%s": %d' % (string, length))
 
+                length = 0
                 string = ""
-                break_word = False
 
             elif (char != "\n") and (char != "\r"):
                 string = string + char
                 string = string.lower()
+                length += 1
 
         elif string[0] != order[order_index] and (order_index + 1 < len(order)):
             order_index += 1
-            file.write("),\n'%s':(" % order[order_index])
-            break_word = True
+            file.write('},\n"%s":{' % order[order_index])
+            get_smaller_index = True
+            first_time = True
 
-    file.write(")}")
+    file.write('}}')
     file.close()
 
     return
