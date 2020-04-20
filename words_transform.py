@@ -45,7 +45,9 @@ def save_words_with_keys(words):
                 string = string + " "
 
             elif (char == "\r") or (break_word == True):
-                file.write("'%s'," % string)
+                if " " not in string:
+                    file.write("'%s'," % string)
+
                 string = ""
                 break_word = False
 
